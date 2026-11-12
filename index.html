@@ -155,7 +155,7 @@
   @keyframes spin{to{transform:rotate(360deg)}}
 
   /* ---------- kartlar ---------- */
-  .games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-content:start}
+  .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
   .col-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px dashed #555d5055;color:#8b957f;font:700 10.5px var(--fm);letter-spacing:.24em;text-transform:uppercase}
   .col-head b{color:var(--fg)}
 
@@ -420,7 +420,7 @@
     </section>
 
     <section class="games" id="games" aria-label="Oyunlar">
-      <div class="col-head"><span>Oyunlar</span><b>03</b></div>
+      <div class="col-head"><span>Oyunlar</span><b>04</b></div>
 
       <article class="card" data-tilt style="--accent:#e0473b;--soft:rgba(224,71,59,.28)">
         <div class="thumb">
@@ -501,6 +501,41 @@
           </div>
         </div>
         <h2>Stick War</h2>
+      </article>
+
+      <article class="card" data-tilt style="--accent:#4fd8c2;--soft:rgba(79,216,194,.22)">
+        <div class="thumb">
+          <span class="stripe" aria-hidden="true"></span>
+          <span class="halo" aria-hidden="true"></span>
+          <span class="num">04</span>
+          <div class="art-wrap" style="--d:-5s">
+            <svg class="art" viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <radialGradient id="gGlobe" cx="34%" cy="27%" r="80%">
+                  <stop offset="0" stop-color="#2f6d6a"/><stop offset="55%" stop-color="#1c3d40"/><stop offset="100%" stop-color="#0b1414"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="32" cy="57" rx="22" ry="4" fill="#000" opacity=".45"/>
+              <circle cx="32" cy="33" r="20" fill="url(#gGlobe)" stroke="#0b0d08" stroke-width="3"/>
+              <g fill="none" stroke="#4fd8c2" stroke-width="1.5" opacity=".85">
+                <ellipse cx="32" cy="33" rx="8" ry="20"/>
+                <ellipse cx="32" cy="33" rx="14" ry="20"/>
+                <path d="M12 33h40"/>
+                <path d="M14.5 23h35M14.5 43h35"/>
+              </g>
+              <ellipse cx="24" cy="26" rx="4.4" ry="6" fill="#fff" opacity=".14" transform="rotate(-28 24 26)"/>
+              <g stroke="#f2c230" stroke-width="2.4" stroke-linecap="round">
+                <path d="M45 12l7 7M52 12l-7 7"/>
+              </g>
+              <circle cx="48.5" cy="15.5" r="6.5" fill="#f2c230" fill-opacity=".12"/>
+            </svg>
+          </div>
+          <span class="glare" aria-hidden="true"></span>
+          <div class="action">
+            <a class="play" href="https://dunya-savasi-mp.onrender.com" data-base="https://dunya-savasi-mp.onrender.com" target="_blank" rel="noopener">Oyna <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <h2>Dünya Savaşı</h2>
       </article>
     </section>
 
