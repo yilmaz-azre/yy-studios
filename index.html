@@ -113,7 +113,7 @@
   .avatar img{width:100%;height:100%;object-fit:cover;display:block}
   .account.on .avatar{box-shadow:0 0 0 2px #6fbf7340,0 0 16px -4px #6fbf73}
   .acct{display:grid;line-height:1.15;text-align:left;min-width:0}
-  .acct b{font:700 12.5px var(--fd);letter-spacing:.02em;max-width:132px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .acct b{font:700 12.5px var(--fd);letter-spacing:.02em;max-width:172px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .acct small{display:flex;align-items:center;gap:5px;font:700 8.5px var(--fm);letter-spacing:.16em;text-transform:uppercase;color:#8b957f}
   .acct small::before{content:"";width:5px;height:5px;border-radius:50%;background:#7a8472;transition:background .3s,box-shadow .3s}
   .account.on .acct small::before{background:var(--ok);box-shadow:0 0 8px var(--ok);animation:pulse 1.8s ease-in-out infinite}
@@ -317,6 +317,18 @@
   }
   .btn-ghost:hover{color:#ff9287;border-color:#7a4b44}
   .dlg-note{margin:0;color:#7f8a77;font:700 9.5px/1.5 var(--fm);letter-spacing:.03em}
+  .admin-box{display:grid;gap:8px;padding:12px;border-radius:10px;border:1px dashed #3c4533;background:#191d15}
+  .admin-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font:700 9.5px var(--fm);letter-spacing:.18em;text-transform:uppercase;color:#8b957f}
+  .admin-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:6px;border:1px solid #f2c23066;color:var(--sig);font:700 9px var(--fm);letter-spacing:.08em}
+  .admin-row{display:flex;gap:8px}
+  .admin-row input{
+    flex:1;min-width:0;min-height:40px;border-radius:8px;border:1px solid var(--line);background:#13160f;color:var(--fg);
+    padding:0 11px;font:700 15px var(--fd);letter-spacing:.34em;outline:none;
+  }
+  .admin-row input::placeholder{letter-spacing:.06em;font:700 12px var(--fd);color:#6d7763}
+  .admin-row input:focus{border-color:var(--sig);box-shadow:0 0 0 3px #f2c23026}
+  .admin-row .btn-mini{min-height:40px;padding:0 14px;flex:0 0 auto}
+  .admin-row input[disabled]{opacity:.5}
 
   @media (max-width:1024px){
     .topbar{padding-top:15px}
@@ -333,7 +345,7 @@
   }
   @media (max-width:560px){
     .brand .txt{display:none}
-    .acct b{max-width:92px}
+    .acct b{max-width:120px}
     .hero{gap:13px}
     .card{padding:7px;gap:6px}
     h2{font-size:10.5px;letter-spacing:.04em}
@@ -521,6 +533,18 @@
       <input id="nameIn" type="text" maxlength="18" placeholder="Örn. Yusuf" autocomplete="nickname" enterkeyhint="done">
     </label>
 
+    <div class="admin-box">
+      <div class="admin-head">
+        <span>ADMİN hesabı</span>
+        <span class="admin-badge" id="adminBadge" hidden>❄️👑 Admin</span>
+      </div>
+      <div class="admin-row">
+        <input id="adminPass" type="password" inputmode="numeric" maxlength="8" placeholder="Şifre" autocomplete="off">
+        <button class="btn-mini" type="button" id="adminBtn">Giriş</button>
+      </div>
+      <p class="err" id="adminErr" role="alert" hidden></p>
+    </div>
+
     <p class="err" id="err" role="alert" hidden></p>
 
     <div class="dlg-actions">
@@ -545,6 +569,10 @@
   const photoIn = $('photoIn'), photoDel = $('photoDel');
   const dlgAvatar = $('dlgAvatar'), err = $('err');
   const deleteBtn = $('deleteBtn'), closeBtn = $('closeBtn');
+  const adminPass = $('adminPass'), adminBtn = $('adminBtn'), adminBadge = $('adminBadge'), adminErr = $('adminErr');
+  const CROWN = '❄️👑', ADMIN_CODE = '6161';
+
+  function dispName(p) { return p ? (p.admin ? CROWN + ' ' + p.name : p.name) : ''; }
 
   function loadProfile() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { return null; }
@@ -572,13 +600,41 @@
     }
   }
   function paintChip() {
-    chipName.textContent = profile ? profile.name : 'Misafir';
-    chipSub.textContent = profile ? 'Hesap' : 'Giriş yap';
+    chipName.textContent = profile ? dispName(profile) : 'Misafir';
+    chipSub.textContent = profile ? (profile.admin ? 'Admin' : 'Hesap') : 'Giriş yap';
     paintAvatar(chipAvatar, profile);
     accountBtn.classList.toggle('on', !!profile);
+    let q = '';
+    if (profile) {
+      q = '?name=' + encodeURIComponent(profile.name);
+      if (profile.thumb) q += '&av=' + encodeURIComponent(profile.thumb);
+      if (profile.admin) q += '&crown=1';
+    }
     document.querySelectorAll('.play').forEach(a => {
-      const base = a.dataset.base;
-      a.href = profile ? base + '?name=' + encodeURIComponent(profile.name) : base;
+      a.href = a.dataset.base + q;
+    });
+  }
+  function renderAdmin() {
+    const on = !!(draft && draft.admin);
+    adminBadge.hidden = !on;
+    adminPass.disabled = on;
+    adminPass.value = '';
+    adminBtn.textContent = on ? 'Çıkış' : 'Giriş';
+    adminErr.hidden = true;
+  }
+  function makeThumb(dataUrl) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const size = 44, c = document.createElement('canvas');
+          c.width = c.height = size;
+          c.getContext('2d').drawImage(img, 0, 0, size, size);
+          resolve(c.toDataURL('image/jpeg', .55));
+        } catch (e) { resolve(null); }
+      };
+      img.onerror = () => resolve(null);
+      img.src = dataUrl;
     });
   }
   function showErr(msg) {
@@ -586,11 +642,12 @@
     err.hidden = !msg;
   }
   function openDialog() {
-    draft = profile ? { ...profile } : { name: '', photo: null };
+    draft = profile ? { ...profile } : { name: '', photo: null, thumb: null, admin: false };
     nameIn.value = draft.name || '';
     paintAvatar(dlgAvatar, draft);
     deleteBtn.hidden = !profile;
     showErr('');
+    renderAdmin();
     if (typeof dlg.showModal === 'function') dlg.showModal();
     else dlg.setAttribute('open', '');
     setTimeout(() => nameIn.focus(), 40);
@@ -632,6 +689,7 @@
     if (!/^image\//.test(file.type)) { showErr('Sadece resim dosyası seç.'); return; }
     try {
       draft.photo = await toSquareJpeg(file);
+      draft.thumb = await makeThumb(draft.photo);
       paintAvatar(dlgAvatar, draft);
       showErr('');
     } catch (err2) { showErr('Fotoğraf okunamadı, başka bir tane dene.'); }
@@ -639,14 +697,50 @@
 
   photoDel.addEventListener('click', () => {
     draft.photo = null;
+    draft.thumb = null;
     paintAvatar(dlgAvatar, draft);
+  });
+
+  adminBtn.addEventListener('click', () => {
+    if (draft.admin) {
+      draft.admin = false;
+      if (profile) { profile = { ...profile, admin: false }; persist(profile); paintChip(); }
+      renderAdmin();
+      return;
+    }
+    if (adminPass.value.trim() !== ADMIN_CODE) {
+      adminErr.textContent = 'Şifre yanlış.';
+      adminErr.hidden = false;
+      adminPass.focus();
+      adminPass.select();
+      return;
+    }
+    const name = nameIn.value.trim().replace(/\s+/g, ' ');
+    if (name.length < 2) {
+      adminErr.textContent = 'Önce adını yaz.';
+      adminErr.hidden = false;
+      nameIn.focus();
+      return;
+    }
+    const base = profile ? { ...profile } : { name: '', photo: draft.photo || null, thumb: draft.thumb || null };
+    const next = { ...base, name: name.slice(0, 18), admin: true };
+    if (!persist(next)) {
+      adminErr.textContent = 'Kaydedilemedi. Tarayıcı depolaması kapalı olabilir.';
+      adminErr.hidden = false;
+      return;
+    }
+    profile = next;
+    draft = { ...next };
+    paintChip();
+    renderAdmin();
+    closeDialog();
   });
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     const name = nameIn.value.trim().replace(/\s+/g, ' ');
     if (name.length < 2) { showErr('En az 2 karakterlik bir isim yaz.'); nameIn.focus(); return; }
-    const next = { name: name.slice(0, 18), photo: draft.photo || null };
+    const next = { name: name.slice(0, 18), photo: draft.photo || null, thumb: draft.thumb || null, admin: !!draft.admin };
     if (!persist(next)) { showErr('Kaydedilemedi. Tarayıcı depolaması kapalı olabilir.'); return; }
     profile = next;
     paintChip();
@@ -663,6 +757,15 @@
   window.addEventListener('storage', e => {
     if (e.key === STORE_KEY) { profile = loadProfile(); paintChip(); }
   });
+
+  if (profile && profile.photo && !profile.thumb) {
+    makeThumb(profile.photo).then(t => {
+      if (!t) return;
+      profile = { ...profile, thumb: t };
+      persist(profile);
+      paintChip();
+    });
+  }
 
   paintChip();
 
