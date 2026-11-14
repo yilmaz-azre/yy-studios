@@ -151,6 +151,9 @@
   }
   .card:nth-child(3){animation-delay:.09s}
   .card:nth-child(4){animation-delay:.17s}
+  .card:nth-child(5){animation-delay:.25s}
+  .card:nth-child(6){animation-delay:.33s}
+  .card-wide{grid-column:1/-1;aspect-ratio:2.4/1}
   @keyframes rise{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
   .card:hover,.card.open{
     border-color:var(--accent);
@@ -378,7 +381,7 @@
     </section>
 
     <section class="games" id="games" aria-label="Oyunlar">
-      <div class="col-head"><span>Oyunlar</span><b>04</b></div>
+      <div class="col-head"><span>Oyunlar</span><b>05</b></div>
 
       <article class="card" data-tilt style="--accent:#e0473b;--soft:rgba(224,71,59,.28)">
         <div class="thumb">
@@ -494,6 +497,38 @@
           </div>
         </div>
         <h2>Dünya Savaşı</h2>
+      </article>
+
+      <article class="card card-wide" data-tilt style="--accent:#d9c489;--soft:rgba(217,196,137,.22)">
+        <div class="thumb">
+          <span class="stripe" aria-hidden="true"></span>
+          <span class="halo" aria-hidden="true"></span>
+          <span class="num">05</span>
+          <div class="art-wrap" style="--d:-6.6s">
+            <svg class="art" viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <linearGradient id="gDoor" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#f2e2a8"/><stop offset="100%" stop-color="#a8904f"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="32" cy="57" rx="24" ry="4" fill="#000" opacity=".45"/>
+              <path d="M10 56V18l22-9 22 9v38z" fill="#2f2a1a" stroke="#0b0d08" stroke-width="2.6" stroke-linejoin="round"/>
+              <path d="M10 18l22-9 22 9-22 9z" fill="#3d3722" stroke="#0b0d08" stroke-width="2.6" stroke-linejoin="round"/>
+              <rect x="25" y="27" width="14" height="29" rx="1.5" fill="url(#gDoor)" stroke="#0b0d08" stroke-width="2.4"/>
+              <circle cx="35.5" cy="43" r="1.6" fill="#1c1600"/>
+              <g stroke="#d9c489" stroke-width="2" stroke-linecap="round" opacity=".7">
+                <path d="M21 33l-4 2M24 40l-5 1M21 47l-4 2"/>
+                <path d="M43 33l4 2M40 40l5 1M43 47l4 2"/>
+              </g>
+              <circle cx="32" cy="12" r="3" fill="#f2c230" fill-opacity=".9"/>
+            </svg>
+          </div>
+          <span class="glare" aria-hidden="true"></span>
+          <div class="action">
+            <a class="play" href="https://bomtik.onrender.com/backrooms.html" data-base="https://bomtik.onrender.com/backrooms.html" target="_blank" rel="noopener">Oyna <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <h2>Backrooms</h2>
       </article>
     </section>
 
